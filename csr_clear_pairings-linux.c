@@ -67,7 +67,7 @@ int main(int argc, uchar **argv)
 
 	if (argc > 1 && strcmp(argv[1], "-version") == 0)
 	{
-		printf("BTUSBCMD for Linux, version 0.1, November 6, 2023\n");
+		printf("BTUSBCMD for Linux, version 0.1, December 13, 2023\n");
 		return 0;
 	}
 
@@ -129,11 +129,24 @@ int main(int argc, uchar **argv)
 
 	
 	if (handle)
-	
-	if(libusb_detach_kernel_driver(handle, 0) != 0) printf("Cannot detach device from kernel driver!\n");
-	if(libusb_claim_interface(handle, 0) != 0) printf("Cannot claim interface!\n");
-
 	{
+
+		if(libusb_detach_kernel_driver(handle, 0) != 0)
+		{
+			printf("Cannot detach device from kernel driver!\n");
+			libusb_close(handle);
+			libusb_exit(NULL);
+			exit(1);
+
+		}
+
+		if(libusb_claim_interface(handle, 0) != 0) 
+		{
+			printf("Cannot claim interface!\n");
+			libusb_close(handle);
+			libusb_exit(NULL);
+			exit(1);
+		}
 		
 		if (argc > 1 && strcmp(argv[1], "-hid2hci") == 0)
 		{
